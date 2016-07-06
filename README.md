@@ -1,0 +1,2 @@
+# CoordinatorLayoutDemo
+CoordinatorLayout学习，模仿稀土掘金个人页面的布局
