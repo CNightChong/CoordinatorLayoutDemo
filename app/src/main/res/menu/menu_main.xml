@@ -5,10 +5,10 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/webview"
+        android:id="@+id/blog"
         android:icon="@mipmap/icon_blog"
         android:orderInCategory="80"
-        android:title="web"
+        android:title="blog"
         app:showAsAction="ifRoom" />
 
     <item

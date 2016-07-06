@@ -10,7 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,58 +27,90 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class MainActivity extends AppCompatActivity {
-    private LinearLayout head_layout;
-    private TabLayout toolbar_tab;
-    private ViewPager main_vp_container;
+
+    private CoordinatorLayout mRootlayout;
+    private AppBarLayout mAppBarLayout;
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
-    private CoordinatorLayout root_layout;
+    private LinearLayout mHeadLl;
+    private Toolbar mToolbar;
+    private TabLayout mTabLayout;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AppBarLayout app_bar_layout = (AppBarLayout) findViewById(R.id.app_bar_layout);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mRootlayout = (CoordinatorLayout) findViewById(R.id.root_layout);
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar_layout);
+        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
+        mHeadLl = (LinearLayout) findViewById(R.id.head_layout);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(mToolbar);
+//        if (getSupportActionBar() != null) {
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        }
+
+        mToolbar.setNavigationIcon(getResources().getDrawable(R.mipmap.ic_arrow_back));
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        head_layout = (LinearLayout) findViewById(R.id.head_layout);
-        root_layout = (CoordinatorLayout) findViewById(R.id.root_layout);
+        mToolbar.inflateMenu(R.menu.menu_main);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                String msg = "";
+                switch (item.getItemId()) {
+                    case R.id.blog:
+                        msg = "博客跳转";
+                        break;
+                    case R.id.weibo:
+                        msg = "微博跳转";
+                        break;
+                    case R.id.action_settings:
+                        msg = "设置";
+                        break;
+                }
+                if (!TextUtils.isEmpty(msg)) {
+                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
 
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id
-                .collapsing_toolbar_layout);
         //使用CollapsingToolbarLayout必须把title设置到CollapsingToolbarLayout上，设置到Toolbar上则不会显示
-        app_bar_layout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (verticalOffset <= -head_layout.getHeight() / 2) {
-                    mCollapsingToolbarLayout.setTitle("涩郎");
+                if (verticalOffset <= -mHeadLl.getHeight() / 2) {
+                    mCollapsingToolbarLayout.setTitle("多喝水");
                 } else {
                     mCollapsingToolbarLayout.setTitle(" ");
                 }
             }
         });
-        toolbar_tab = (TabLayout) findViewById(R.id.toolbar_tab);
-        main_vp_container = (ViewPager) findViewById(R.id.main_vp_container);
+
+        mTabLayout = (TabLayout) findViewById(R.id.toolbar_tab);
+        mViewPager = (ViewPager) findViewById(R.id.main_vp_container);
 
         ViewPagerAdapter vpAdapter = new ViewPagerAdapter(getSupportFragmentManager(), this);
-        main_vp_container.setAdapter(vpAdapter);
-        main_vp_container.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener
-                (toolbar_tab));
-        toolbar_tab.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener
-                (main_vp_container));
+        mViewPager.setAdapter(vpAdapter);
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mTabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
         //tablayout和viewpager建立联系为什么不用下面这个方法呢？自己去研究一下，可能收获更多
-        //toolbar_tab.setupWithViewPager(main_vp_container);
+        // setupWithViewPager会先清空所有的Tab，然后再new新的Tab，会导致第一个Tab的背景图不显示
+//        mTabLayout.setupWithViewPager(mViewPager);
+
+        //设置毛玻璃效果和沉浸状态栏
         loadBlurAndSetStatusBar();
 
-        ImageView head_iv = (ImageView) findViewById(R.id.head_iv);
+        ImageView headIv = (ImageView) findViewById(R.id.head_iv);
         Glide.with(this).load(R.mipmap.bg).bitmapTransform(new RoundedCornersTransformation(this,
-                90, 0)).into(head_iv);
+                90, 0)).into(headIv);
+
     }
 
     /**
@@ -92,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super
                             GlideDrawable> glideAnimation) {
-                        head_layout.setBackground(resource);
-                        root_layout.setBackground(resource);
+                        mHeadLl.setBackground(resource);
+                        mRootlayout.setBackground(resource);
                     }
                 });
 
@@ -107,29 +139,29 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        String msg = "";
-        switch (item.getItemId()) {
-            case R.id.webview:
-                msg += "博客跳转";
-                break;
-            case R.id.weibo:
-                msg += "微博跳转";
-                break;
-            case R.id.action_settings:
-                msg += "设置";
-                break;
-        }
-        if (!msg.equals("")) {
-            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        String msg = "";
+//        switch (item.getItemId()) {
+//            case R.id.blog:
+//                msg += "博客跳转";
+//                break;
+//            case R.id.weibo:
+//                msg += "微博跳转";
+//                break;
+//            case R.id.action_settings:
+//                msg += "设置";
+//                break;
+//        }
+//        if (!TextUtils.equals(msg, "")) {
+//            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 }
