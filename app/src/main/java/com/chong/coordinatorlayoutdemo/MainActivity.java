@@ -45,10 +45,6 @@ public class MainActivity extends AppCompatActivity {
         mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
         mHeadLl = (LinearLayout) findViewById(R.id.head_layout);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(mToolbar);
-//        if (getSupportActionBar() != null) {
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        }
 
         mToolbar.setNavigationIcon(getResources().getDrawable(R.mipmap.ic_arrow_back));
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -139,29 +135,4 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        String msg = "";
-//        switch (item.getItemId()) {
-//            case R.id.blog:
-//                msg += "博客跳转";
-//                break;
-//            case R.id.weibo:
-//                msg += "微博跳转";
-//                break;
-//            case R.id.action_settings:
-//                msg += "设置";
-//                break;
-//        }
-//        if (!TextUtils.equals(msg, "")) {
-//            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 }
