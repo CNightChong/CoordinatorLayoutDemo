@@ -36,9 +36,8 @@ public class PageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_page, null);
+        View view = inflater.inflate(R.layout.fragment_page, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.rv);
-
         // 创建一个线性布局管理器
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         // 设置布局管理器
